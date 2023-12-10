@@ -4,7 +4,7 @@
 class Song{
     public:
     std::string songtitel;
-    std::string albumname;
+    Album album;
     std::string kuenstlername;
     int erscheinungsjahr;
     int songlaenge;
