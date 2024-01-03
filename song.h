@@ -1,7 +1,7 @@
 #include <string>
 #include "album.h"
 
-class Song{
+class Song:public Musik{
     public:
     std::string songtitel;
     Album album;
@@ -9,4 +9,7 @@ class Song{
     int erscheinungsjahr;
     int songlaenge;
     std::string genre;
+    std::string to_string(){
+        return songtitel+";"+kuenstlername+";"+std::to_string(erscheinungsjahr)+";"+std::to_string(songlaenge)+";"+genre;
+    }
 };
