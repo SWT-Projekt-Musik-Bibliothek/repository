@@ -1,19 +1,13 @@
-#include "album.h"
-#include "song.h"
+#include "Musikbibliothek.h"
 #include <fstream>
 Album* alben;
 int anzahl_alben=0;
 Song* songs;
 int anzahl_songs=0;
 //Funktion bekommt neue Meta-Daten
-Album album_hinzufuegen(std::string albumname,std::string kuenstlername,Song *songliste,int erscheinungsjahr,int songanzahl,int albumlaenge){
+Album album_hinzufuegen(std::string albumname,std::string kuenstlername,Song* songliste,int erscheinungsjahr,int songanzahl,int albumlaenge){
     if (anzahl_alben%10==0){ //falls Albumliste voll ist 
-        Album* neu_alben=(Album*) malloc((anzahl_alben+10)*sizeof(Album)); //neue Albumliste um 10 länger
-        for(int i=0; i<anzahl_alben; i++){ 
-            neu_alben[i]=alben[i]; //kopiert alte Albumliste in die neue 
-        }
-        free(alben); //Löscht alte Albumliste 
-        alben=neu_alben; // schiebt die neue in die alte 
+        alben=(Album*)realloc(alben,(anzahl_alben+10)*sizeof(Album)); //neue Albumliste um 10 länger
     }
     Album album; //neues Album mit neuen Meta-Daten
     album.albumname=albumname;
@@ -27,18 +21,12 @@ Album album_hinzufuegen(std::string albumname,std::string kuenstlername,Song *so
     return album;
 }
 //Funktion bekommt neue Meta-Daten
-Song song_hinzufuegen(std::string songtitel, Album album,std::string kuenstlername,int erscheinungsjahr,int songlaenge,std::string genre){
+Song song_hinzufuegen(std::string songtitel, std::string kuenstlername,int erscheinungsjahr,int songlaenge,std::string genre){
     if (anzahl_songs%100==0){ //falls Songliste voll ist 
-        Song* neue_songs=(Song*) malloc((anzahl_songs+100)*sizeof(Song)); //neue Songliste um 100 länger
-        for(int i=0; i<anzahl_songs; i++){ 
-            neue_songs[i]=songs[i]; //kopiert alte Songliste in die neue 
-        }
-        free(songs); //Löscht alte Songliste 
-        songs=neue_songs; // schiebt die neue in die alte 
+        songs=(Song*)realloc(songs,(anzahl_songs+100)*sizeof(Song)); //neue Songliste um 100 länger 
     }
     Song song; //neuer Song mit neuen Meta-Daten
     song.songtitel=songtitel;
-    song.album=album;
     song.kuenstlername=kuenstlername;
     song.erscheinungsjahr=erscheinungsjahr;
     song.songlaenge=songlaenge;
@@ -46,6 +34,27 @@ Song song_hinzufuegen(std::string songtitel, Album album,std::string kuenstlerna
     songs[anzahl_songs]=song; //fügt den neuen Song in die Songliste hinzu
     anzahl_songs++; //Anzahl der Songs erhöht sich um eins 
     return song;
+}
+void song_zu_album_hinzufuegen(Album album, Song song){
+    if (album.songanzahl%10==0){
+        album.songliste=(Song*)realloc(album.songliste,(album.songanzahl+10)*sizeof(Album));
+    }
+    album.songliste[album.songanzahl]=song;
+    album.songanzahl++;
+    album.albumlaenge+=song.songlaenge;
+}
+void song_von_album_entfernen(Album album, Song song){
+    bool song_entfernt=true;
+    for (int i=0; i<album.songanzahl; i++){
+        if (&album.songliste[i]==&song){
+            for (int j=i+1; j<album.songanzahl-1; j++){
+                album.songliste[j]=album.songliste[j+1];
+            }
+            album.songanzahl--;
+            album.albumlaenge-=song.songlaenge;
+            break;
+        }
+    }
 }
 //Funktion löscht ein Album
 void album_loeschen(Album album){
@@ -59,6 +68,10 @@ void album_loeschen(Album album){
             }
             //Anzahl verringert sich um 1
             anzahl_alben--;
+            for (int i=0;i<album.songanzahl;i++){
+                Album *null = NULL;
+                album.songliste[i].album=*null;
+            }
             //Danach wird die Suche beendet
             break;
         }
@@ -76,13 +89,14 @@ void song_loeschen(Song song){
             }
             //Anzahl verringert sich um 1
             anzahl_songs--;
+            song_von_album_entfernen(song.album,song);
             //Danach wird die Suche beendet
             break;
         }
     }
 }
 //Funktion sucht nach Songs oder Alben
-int suchen(Musik* suchergebnisse,std::string suchbegriff){
+int songs_suchen(Song* suchergebnisse,std::string suchbegriff){
     //Zählt die Suchergebnisse
     int anzahl_ergebnisse=0;
     //Sucht in allen Songs
@@ -99,6 +113,12 @@ int suchen(Musik* suchergebnisse,std::string suchbegriff){
             anzahl_ergebnisse++;
         }
     }
+    //Gibt die Anzahl der Suchergebnisse für die Suchergebnisse (Call by Reference) zurück
+    return anzahl_ergebnisse;
+}
+int alben_suchen(Album* suchergebnisse,std::string suchbegriff){
+    //Zählt die Suchergebnisse
+    int anzahl_ergebnisse=0;
     //Sucht in allen Alben
     for (int i=0; i<anzahl_alben; i++){
         //Vergleicht den Suchbegriff mit dem Albumnamen und allen Meta-Daten
@@ -115,11 +135,11 @@ int suchen(Musik* suchergebnisse,std::string suchbegriff){
     //Gibt die Anzahl der Suchergebnisse für die Suchergebnisse (Call by Reference) zurück
     return anzahl_ergebnisse;
 }
-void bibliothek_speichern(std::string speicherort){
-    std::ofstream bibliothek(speicherort);
+bool bibliothek_speichern(std::string dateipfad){
+    std::ofstream bibliothek(dateipfad);
     if (bibliothek.is_open()){
         for(int i=0; i<anzahl_songs; i++){
-            bibliothek<<("song;"+std::to_string(i)+songs[i].to_string()+";\n");
+            bibliothek<<("song;"+std::to_string(i)+songs[i].to_string_csv()+";");
         }
         for (int i=0; i<anzahl_alben; i++){
             std::string songnummern="";
@@ -130,20 +150,22 @@ void bibliothek_speichern(std::string speicherort){
                     }
                 }
             }
-            bibliothek<<("album;"+std::to_string(i)+alben[i].to_string()+";"+songnummern+"\n");
+            bibliothek<<("album;"+std::to_string(i)+alben[i].to_string_csv()+";"+songnummern+";");
         }
         bibliothek.close();
+        return true;
     }
+    return false;
 }
-void bibliothek_laden(std::string speicherort){
-    std::ifstream bibliothek(speicherort);
+bool bibliothek_laden(std::string dateipfad){
+    bibliothek_leeren();
+    std::ifstream bibliothek(dateipfad);
     if (bibliothek.is_open()) {
         std::string zeile;
         while (std::getline(bibliothek, zeile)) {
             if (zeile.substr(0,4)=="song"){
                 int songtitel_ende=zeile.find(';',6);
                 std::string songtitel=zeile.substr(6,songtitel_ende-6);
-                Album album;
                 int kuenstlername_ende=zeile.find(';',songtitel_ende+1);
                 std::string kuenstlername=zeile.substr(songtitel_ende+1,kuenstlername_ende-songtitel_ende-1);
                 int erscheinungsjahr_ende=zeile.find(';',kuenstlername_ende+1);
@@ -152,7 +174,7 @@ void bibliothek_laden(std::string speicherort){
                 int songlaenge=std::stoi(zeile.substr(erscheinungsjahr_ende+1,songlaenge_ende-erscheinungsjahr_ende-1));
                 int genre_ende=zeile.find(';',songlaenge_ende+1);
                 std::string genre=zeile.substr(songlaenge_ende+1,genre_ende-songlaenge_ende-1);
-                song_hinzufuegen(songtitel,album,kuenstlername,erscheinungsjahr,songlaenge,genre);
+                song_hinzufuegen(songtitel,kuenstlername,erscheinungsjahr,songlaenge,genre);
             }
             if (zeile.substr(0,5)=="album"){
                 int albumname_ende=zeile.find(';',6);
@@ -176,5 +198,16 @@ void bibliothek_laden(std::string speicherort){
                 }
             }
         }
+        bibliothek.close();
+        return true;
     }
+    return false;
+}
+void bibliothek_leeren(){
+    free(alben);
+    alben=(Album*) malloc(10*sizeof(Album));
+    anzahl_alben=0;
+    free(songs);
+    songs=(Song*) malloc(100*sizeof(Song));
+    anzahl_songs=0;
 }

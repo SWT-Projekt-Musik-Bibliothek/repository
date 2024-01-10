@@ -1,7 +1,6 @@
 #include <string>
-class Musik{};
-class Song: public Musik{};
-class Album: public Musik{
+class Song;
+class Album{
     public:
     std::string albumname;
     std::string kuenstlername;
@@ -9,7 +8,6 @@ class Album: public Musik{
     int erscheinungsjahr;
     int songanzahl;
     int albumlaenge;
-    std::string to_string(){
-        return albumname+";"+kuenstlername+";"+std::to_string(erscheinungsjahr)+";"+std::to_string(songanzahl)+";"+std::to_string(albumlaenge);
-    }
+    std::string to_string_csv();
+    std::string to_string_ausgabe();
 };
