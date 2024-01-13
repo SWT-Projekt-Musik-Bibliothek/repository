@@ -1,5 +1,6 @@
 #include "Musikbibliothek.h"
 std::string texteingabe(std::string aufforderung);
+std::string texteingabe_ohne_satzzeichen(std::string aufforderung);
 int zahleingabe(std::string aufforderung);
 void bibliothek_einlesen();
 void bibliothek_abspeichern();

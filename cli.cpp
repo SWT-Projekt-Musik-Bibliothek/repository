@@ -3,7 +3,31 @@
 std::string texteingabe(std::string aufforderung){
     std::cout<<aufforderung;
     std::string eingabe;
-    std::cin>>eingabe;
+    while(eingabe.length()==0){
+        std::cin>>eingabe;
+        if(eingabe.length()==0){
+            std::cout<<"Ungültige Eingabe: Die Eingabe darf nicht leer sein!\n";
+        }
+    }
+    return eingabe;
+}
+std::string texteingabe_ohne_satzzeichen(std::string aufforderung){
+    char satzzeichen[]={'.',',','!','?',':',';','-','+','(',')','[',']','{','}','/','\\'};
+    std::string eingabe;
+    bool eingabe_hat_satzzeichen;
+    do{
+        eingabe_hat_satzzeichen=false;
+        eingabe=texteingabe(aufforderung);
+        for (int i=0;i<sizeof(satzzeichen)/sizeof(*satzzeichen);i++){
+            if(eingabe.find(satzzeichen[i])<eingabe.length()){
+                eingabe_hat_satzzeichen=true;
+                break;
+            }
+        }
+        if(eingabe_hat_satzzeichen){
+            std::cout<<"Ungültige Eingabe: Die Eingabe darf keine Satzzeichen enthalten!\n";
+        }
+    }while(eingabe_hat_satzzeichen);
     return eingabe;
 }
 int zahleingabe(std::string aufforderung){
@@ -106,7 +130,7 @@ void erscheinungsjahr_album_bearbeiten(Album album){
     album.erscheinungsjahr=neues_erscheinungsjahr;
 }
 void album_von_song_bearbeiten(Song song){
-    std::string suchbegriff=texteingabe("Bitte geben Sie einen Suchbegriff ein, um das entsprechende Album zu suchen.\n");
+    std::string suchbegriff=texteingabe_ohne_satzzeichen("Bitte geben Sie einen Suchbegriff ein, um das entsprechende Album zu suchen.\n");
     Album* suchergebnisse=(Album*) malloc((anzahl_alben)*sizeof(Album));
     int anzahl_ergebnisse=alben_suchen(suchergebnisse, suchbegriff);
     if (anzahl_ergebnisse==0){
@@ -144,7 +168,7 @@ void song_von_album_bearbeiten(Album album){
         }
     }
     if(auswahl_aktion==1){
-        std::string suchbegriff=texteingabe("Bitte geben Sie einen Suchbegriff ein, um den entsprechenden Song zu suchen.\n");
+        std::string suchbegriff=texteingabe_ohne_satzzeichen("Bitte geben Sie einen Suchbegriff ein, um den entsprechenden Song zu suchen.\n");
         Song* suchergebnisse=(Song*) malloc((anzahl_songs)*sizeof(Song));
         int anzahl_ergebnisse=songs_suchen(suchergebnisse, suchbegriff);
         if (anzahl_ergebnisse==0){
@@ -192,7 +216,7 @@ void song_von_album_bearbeiten(Album album){
     }
 }
 void suchen(){
-    std::string suchbegriff=texteingabe("Bitte geben Sie einen Suchbegriff ein.\n");
+    std::string suchbegriff=texteingabe_ohne_satzzeichen("Bitte geben Sie einen Suchbegriff ein.\n");
     Song* suchergebnisse_songs=(Song*) malloc((anzahl_songs)*sizeof(Song));
     int anzahl_suchergebnisse_songs=songs_suchen(suchergebnisse_songs, suchbegriff);
     Album* suchergebnisse_alben=(Album*) malloc((anzahl_songs)*sizeof(Album));
