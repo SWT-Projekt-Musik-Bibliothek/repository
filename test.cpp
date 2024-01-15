@@ -78,7 +78,13 @@ TEST_CASE("Suchen"){
         int anzahl_suchergebnisse=songs_suchen(suchergebnisse,"Bazzazian");
         REQUIRE(anzahl_suchergebnisse==8);
         REQUIRE(suchergebnisse[0].songtitel=="Bolbon");
-        REQUIRE(suchergebnisse[0].songtitel=="1999 Pt. 4 (AloAlo)");
+        REQUIRE(suchergebnisse[1].songtitel=="1999 Pt. 4 (AloAlo)");
+        REQUIRE(suchergebnisse[2].songtitel=="RADW");
+        REQUIRE(suchergebnisse[3].songtitel=="Conan x Xenia");
+        REQUIRE(suchergebnisse[4].songtitel=="1999 Pt. 5 (Mainpark Baby)");
+        REQUIRE(suchergebnisse[5].songtitel=="Hotelzimmer");
+        REQUIRE(suchergebnisse[6].songtitel=="Depression & Schmerz");
+        REQUIRE(suchergebnisse[7].songtitel=="1999 Pt. 6 (Gabriel vs. Luzifer)");
     }
 }
 TEST_CASE("Songs löschen"){
@@ -89,6 +95,7 @@ TEST_CASE("Songs löschen"){
         song_loeschen(songs[0]);
         REQUIRE(anzahl_songs==2);
         REQUIRE(songs[0].songtitel=="Morgenstern");
+        REQUIRE(songs[1].songtitel=="KMDF");
     }
 }
 TEST_CASE("Songs zu Album hinzufügen"){
