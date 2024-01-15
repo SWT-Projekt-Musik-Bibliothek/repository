@@ -48,7 +48,7 @@ TEST_CASE("Test Album hinzufügen"){
         for (int i=0; i<14; i++){
             test_songs[i]=songs[i];
         }
-        album_hinzufuegen("Das weisse Album", "Haftbefehl", songs, 2020, 14, 2619);
+        album_hinzufuegen("Das weisse Album", "Haftbefehl", test_songs, 2020, 14, 2619);
         REQUIRE(anzahl_alben==1);
         REQUIRE(alben[0].albumname=="Das weisse Album");
         REQUIRE(alben[0].kuenstlername=="Haftbefehl");
@@ -100,7 +100,7 @@ TEST_CASE("Songs zu Album hinzufügen"){
         for (int i=0; i<3; i++){
             test_songs[i]=songs[i];
         }
-        album_hinzufuegen("Das weisse Album (nicht vollständig)", "Haftbefehl", songs, 2020, 3, 609); // Album ist in alben[0]
+        album_hinzufuegen("Das weisse Album (nicht vollständig)", "Haftbefehl", test_songs, 2020, 3, 609); // Album ist in alben[0]
         song_hinzufuegen("Für immer reich", "Haftbefehl", 2020, 192, "Rap"); //Neuer Song ist in songs[3], weil von 0 gezählt wird
         song_zu_album_hinzufuegen(alben[0], songs[3]);
         REQUIRE(alben[0].songanzahl==4);
