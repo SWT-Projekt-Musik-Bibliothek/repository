@@ -1,6 +1,6 @@
 #include "cli.h"
 #include<iostream>
-std::string texteingabe(std::string aufforderung){
+std::string Cli::texteingabe(std::string aufforderung){
     std::cout<<aufforderung;
     std::string eingabe;
     while(eingabe.length()==0){
@@ -11,7 +11,7 @@ std::string texteingabe(std::string aufforderung){
     }
     return eingabe;
 }
-std::string texteingabe_ohne_satzzeichen(std::string aufforderung){
+std::string Cli::texteingabe_ohne_satzzeichen(std::string aufforderung){
     char satzzeichen[]={'.',',','!','?',':',';','-','+','(',')','[',']','{','}','/','\\'};
     std::string eingabe;
     bool eingabe_hat_satzzeichen;
@@ -30,7 +30,7 @@ std::string texteingabe_ohne_satzzeichen(std::string aufforderung){
     }while(eingabe_hat_satzzeichen);
     return eingabe;
 }
-int zahleingabe(std::string aufforderung){
+int Cli::zahleingabe(std::string aufforderung){
     int zahl;
     bool eingabe_ist_zahl;
     do{
@@ -50,12 +50,12 @@ int zahleingabe(std::string aufforderung){
     }while(!eingabe_ist_zahl);
     return zahl;
 }
-void bibliothek_einlesen(){
+void Cli::bibliothek_einlesen(){
     bool bibliothek_geladen=false;
     while(!bibliothek_geladen){
         std::string speicherort=texteingabe("Bitte geben Sie den Dateipfad der existierenden Bibliothek ein.\n");
         if(speicherort.substr(speicherort.length()-4,speicherort.length()-1)==".CSV"){
-            bibliothek_geladen=bibliothek_laden(speicherort);
+            bibliothek_geladen=musikbibliothek.bibliothek_laden(speicherort);
             if (!bibliothek_geladen){
                 std::cout<<"Dies ist kein Dateipfad einer Musikbibliothek!\n";
             }
@@ -65,12 +65,12 @@ void bibliothek_einlesen(){
         }
     }
 }
-void bibliothek_abspeichern(){
+void Cli::bibliothek_abspeichern(){
     bool bibliothek_geladen=false;
     while(!bibliothek_geladen){
         std::string speicherort=texteingabe("Bitte geben Sie den Dateipfad ein, an dem die Bibliothek gespeichert werden soll.\n");
         if(speicherort.substr(speicherort.length()-4,speicherort.length()-1)==".CSV"){
-            bibliothek_geladen=bibliothek_laden(speicherort);
+            bibliothek_geladen=musikbibliothek.bibliothek_laden(speicherort);
             if (!bibliothek_geladen){
                 std::cout<<"Bei diesem Dateipfad kann die Bibiothek nicht gespeichert werden!\n";
             }
@@ -80,59 +80,59 @@ void bibliothek_abspeichern(){
         }
     }
 }
-void song_eingeben(){
+void Cli::song_eingeben(){
     std::string songtitel=texteingabe("Bitte geben Sie den Titel des Songs ein.\n");
     std::string kuenstlername=texteingabe("Bitte geben Sie den Künstlernamen des Songs ein.\n");
     int erscheinungsjahr=zahleingabe("Bitte geben Sie das Erscheinungsjahr des Songs ein.\n");
     int songlaenge=zahleingabe("Bitte geben Sie die Songlänge ein.\n");
     std::string genre=texteingabe("Bitte geben Sie das Genre des Songs ein.\n");
-    song_hinzufuegen(songtitel, kuenstlername, erscheinungsjahr, songlaenge, genre);
+    musikbibliothek.song_hinzufuegen(songtitel, kuenstlername, erscheinungsjahr, songlaenge, genre);
 }
-void album_eingeben(){
+void Cli::album_eingeben(){
     std::string albumname=texteingabe("Bitte geben Sie den Namen des Albums ein.\n");
     std::string kuenstlername=texteingabe("Bitte geben Sie den Künstlernamen des Albums ein.\n");
     int erscheinungsjahr=zahleingabe("Bitte geben Sie das Erscheinungsjahr des Albums ein.\n");
     Song* songliste=(Song*) malloc(10*sizeof(Song));
-    album_hinzufuegen(albumname, kuenstlername, songliste, erscheinungsjahr, 0, 0);
+    musikbibliothek.album_hinzufuegen(albumname, kuenstlername, songliste, erscheinungsjahr, 0, 0);
 }
-void songtitel_bearbeiten(Song song){
+void Cli::songtitel_bearbeiten(Song song){
     std::string neuer_songtitel=texteingabe("Bitte geben Sie den neuen Songtitel ein.\n");
     song.songtitel=neuer_songtitel;
 }
-void kuenstlername_song_bearbeiten(Song song){
+void Cli::kuenstlername_song_bearbeiten(Song song){
     std::string neuer_kuenstlername=texteingabe("Bitte geben Sie den neuen Künstlernamen ein.\n");
     song.kuenstlername=neuer_kuenstlername;
 }
-void erscheinungsjahr_song_bearbeiten(Song song){
+void Cli::erscheinungsjahr_song_bearbeiten(Song song){
     int neues_erscheinungsjahr=zahleingabe("Bitte geben Sie das neue Erscheinungsjahr ein.\n");
     song.erscheinungsjahr=neues_erscheinungsjahr;
 }
-void songlaenge_bearbeiten(Song song){
+void Cli::songlaenge_bearbeiten(Song song){
     int neue_songlaenge=zahleingabe("Bitte geben Sie die neue Songlaenge ein.\n");
     int differenz=neue_songlaenge-song.songlaenge;
     song.album.albumlaenge+=differenz;
     song.songlaenge=neue_songlaenge;
 }
-void genre_song_bearbeiten(Song song){
+void Cli::genre_song_bearbeiten(Song song){
     std::string neues_genre=texteingabe("Bitte geben Sie das neue Genre ein.\n");
     song.genre=neues_genre;
 }
-void albumname_bearbeiten(Album album){
+void Cli::albumname_bearbeiten(Album album){
     std::string neuer_albumname=texteingabe("Bitte geben Sie den neuen Albumnamen ein.\n");
     album.albumname=neuer_albumname;
 }
-void kuenstlername_album_bearbeiten(Album album){
+void Cli::kuenstlername_album_bearbeiten(Album album){
     std::string neuer_kuenstlername=texteingabe("Bitte geben Sie den neuen Künstlernamen ein.\n");
     album.kuenstlername=neuer_kuenstlername;
 }
-void erscheinungsjahr_album_bearbeiten(Album album){
+void Cli::erscheinungsjahr_album_bearbeiten(Album album){
     int neues_erscheinungsjahr=zahleingabe("Bitte geben Sie das neue Erscheinungsjahr ein.\n");
     album.erscheinungsjahr=neues_erscheinungsjahr;
 }
-void album_von_song_bearbeiten(Song song){
+void Cli::album_von_song_bearbeiten(Song song){
     std::string suchbegriff=texteingabe_ohne_satzzeichen("Bitte geben Sie einen Suchbegriff ein, um das entsprechende Album zu suchen.\n");
-    Album* suchergebnisse=(Album*) malloc((anzahl_alben)*sizeof(Album));
-    int anzahl_ergebnisse=alben_suchen(suchergebnisse, suchbegriff);
+    Album* suchergebnisse=(Album*) malloc((musikbibliothek.anzahl_alben)*sizeof(Album));
+    int anzahl_ergebnisse=musikbibliothek.alben_suchen(suchergebnisse, suchbegriff);
     if (anzahl_ergebnisse==0){
         std::cout<<"Zu diesem Suchbegriff gibt es leider keine passenden Alben.";
         return;
@@ -152,11 +152,11 @@ void album_von_song_bearbeiten(Song song){
     if(auswahl==0){
         return;
     }
-    song_von_album_entfernen(song.album, song);
+    musikbibliothek.song_von_album_entfernen(song.album, song);
     song.album=suchergebnisse[auswahl-1];
-    song_zu_album_hinzufuegen(suchergebnisse[auswahl-1], song);
+    musikbibliothek.song_zu_album_hinzufuegen(suchergebnisse[auswahl-1], song);
 }
-void song_von_album_bearbeiten(Album album){
+void Cli::song_von_album_bearbeiten(Album album){
     std::cout<<"0: Zurück zum Hauptmenü.\n";
     std::cout<<"1: Einen Song zu diesem Album hinzufügen.\n";
     std::cout<<"2: Einen Song aus diesem Album entfernen.\n";
@@ -169,8 +169,8 @@ void song_von_album_bearbeiten(Album album){
     }
     if(auswahl_aktion==1){
         std::string suchbegriff=texteingabe_ohne_satzzeichen("Bitte geben Sie einen Suchbegriff ein, um den entsprechenden Song zu suchen.\n");
-        Song* suchergebnisse=(Song*) malloc((anzahl_songs)*sizeof(Song));
-        int anzahl_ergebnisse=songs_suchen(suchergebnisse, suchbegriff);
+        Song* suchergebnisse=(Song*) malloc((musikbibliothek.anzahl_songs)*sizeof(Song));
+        int anzahl_ergebnisse=musikbibliothek.songs_suchen(suchergebnisse, suchbegriff);
         if (anzahl_ergebnisse==0){
             std::cout<<"Zu diesem Suchbegriff gibt es leider keine passenden Songs.";
             return;
@@ -190,7 +190,7 @@ void song_von_album_bearbeiten(Album album){
         if(auswahl_song==0){
             return;
         }
-        song_zu_album_hinzufuegen(album, suchergebnisse[auswahl_song-1]);
+        musikbibliothek.song_zu_album_hinzufuegen(album, suchergebnisse[auswahl_song-1]);
     }
     if(auswahl_aktion==2){
         if(album.songanzahl==0){
@@ -211,16 +211,16 @@ void song_von_album_bearbeiten(Album album){
             if(auswahl_song==0){
                 return;
             }
-            song_von_album_entfernen(album, album.songliste[auswahl_song-1]);
+            musikbibliothek.song_von_album_entfernen(album, album.songliste[auswahl_song-1]);
         }
     }
 }
-void suchen(){
+void Cli::suchen(){
     std::string suchbegriff=texteingabe_ohne_satzzeichen("Bitte geben Sie einen Suchbegriff ein.\n");
-    Song* suchergebnisse_songs=(Song*) malloc((anzahl_songs)*sizeof(Song));
-    int anzahl_suchergebnisse_songs=songs_suchen(suchergebnisse_songs, suchbegriff);
-    Album* suchergebnisse_alben=(Album*) malloc((anzahl_songs)*sizeof(Album));
-    int anzahl_suchergebnisse_alben=alben_suchen(suchergebnisse_alben, suchbegriff);
+    Song* suchergebnisse_songs=(Song*) malloc((musikbibliothek.anzahl_songs)*sizeof(Song));
+    int anzahl_suchergebnisse_songs=musikbibliothek.songs_suchen(suchergebnisse_songs, suchbegriff);
+    Album* suchergebnisse_alben=(Album*) malloc((musikbibliothek.anzahl_songs)*sizeof(Album));
+    int anzahl_suchergebnisse_alben=musikbibliothek.alben_suchen(suchergebnisse_alben, suchbegriff);
     if (anzahl_suchergebnisse_songs+anzahl_suchergebnisse_alben==0){
         std::cout<<"Zu diesem Suchbegriff gibt es leider keine Treffer.";
         return;
@@ -244,7 +244,7 @@ void suchen(){
         return;
     }
     int auswahl_aktion=-1;
-    if (auswahl_musik<=anzahl_songs){
+    if (auswahl_musik<=musikbibliothek.anzahl_songs){
         Song song_auswahl=suchergebnisse_songs[auswahl_musik-1];
         std::cout<<"Der Song wurde ausgewählt. Folgende Aktionen stehen zur Verfügung:";
         std::cout<<"0: Zurück zum Hauptmenü";
@@ -265,7 +265,7 @@ void suchen(){
                 case 4: erscheinungsjahr_song_bearbeiten(song_auswahl); break;
                 case 5: songlaenge_bearbeiten(song_auswahl); break;
                 case 6: genre_song_bearbeiten(song_auswahl); break;
-                case 7: song_loeschen(song_auswahl); break;
+                case 7: musikbibliothek.song_loeschen(song_auswahl); break;
                 default: std::cout<<"Ungültige Auswahl!\n"; break;
             }
         }
@@ -287,13 +287,14 @@ void suchen(){
                 case 2: kuenstlername_album_bearbeiten(album_auswahl); break;
                 case 3: song_von_album_bearbeiten(album_auswahl); break;
                 case 4: erscheinungsjahr_album_bearbeiten(album_auswahl); break;
-                case 5: album_loeschen(album_auswahl); break;
+                case 5: musikbibliothek.album_loeschen(album_auswahl); break;
                 default: std::cout<<"Ungültige Auswahl!\n"; break;
             }
         }
     }
 }
 int main(){
+    Cli cli;
     int auswahl=0;
     while(auswahl!=6){
         std::cout<<"1: Bestehende Bibliothek einlesen\n";
@@ -303,13 +304,13 @@ int main(){
         std::cout<<"5: Songs/Alben suchen und bearbeiten\n";
         std::cout<<"6: Programm beenden\n";
         while(auswahl<1||auswahl>6){
-            auswahl=zahleingabe("Bitte wählen Sie mit einer Zahleneingabe aus, welche Aktion Sie ausführen möchten.\n");
+            auswahl=cli.zahleingabe("Bitte wählen Sie mit einer Zahleneingabe aus, welche Aktion Sie ausführen möchten.\n");
             switch(auswahl){
-                case 1: bibliothek_einlesen(); break;
-                case 2: bibliothek_abspeichern(); break;
-                case 3: song_eingeben(); break;
-                case 4: album_eingeben(); break;
-                case 5: suchen(); break;
+                case 1: cli.bibliothek_einlesen(); break;
+                case 2: cli.bibliothek_abspeichern(); break;
+                case 3: cli.song_eingeben(); break;
+                case 4: cli.album_eingeben(); break;
+                case 5: cli.suchen(); break;
                 case 6: break;
                 default: std::cout<<"Ungültige Auswahl!\n"; break;
             }

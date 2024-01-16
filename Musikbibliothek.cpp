@@ -1,11 +1,7 @@
 #include "Musikbibliothek.h"
 #include <fstream>
-Album* alben;
-int anzahl_alben=0;
-Song* songs;
-int anzahl_songs=0;
 //Funktion bekommt neue Meta-Daten
-Album album_hinzufuegen(std::string albumname,std::string kuenstlername,Song* songliste,int erscheinungsjahr,int songanzahl,int albumlaenge){
+Album Musikbibliothek::album_hinzufuegen(std::string albumname,std::string kuenstlername,Song* songliste,int erscheinungsjahr,int songanzahl,int albumlaenge){
     if (anzahl_alben%10==0){ //falls Albumliste voll ist 
         alben=(Album*)realloc(alben,(anzahl_alben+10)*sizeof(Album)); //neue Albumliste um 10 länger
     }
@@ -21,7 +17,7 @@ Album album_hinzufuegen(std::string albumname,std::string kuenstlername,Song* so
     return album;
 }
 //Funktion bekommt neue Meta-Daten
-Song song_hinzufuegen(std::string songtitel, std::string kuenstlername,int erscheinungsjahr,int songlaenge,std::string genre){
+Song Musikbibliothek::song_hinzufuegen(std::string songtitel, std::string kuenstlername,int erscheinungsjahr,int songlaenge,std::string genre){
     if (anzahl_songs%100==0){ //falls Songliste voll ist 
         songs=(Song*)realloc(songs,(anzahl_songs+100)*sizeof(Song)); //neue Songliste um 100 länger 
     }
@@ -35,7 +31,7 @@ Song song_hinzufuegen(std::string songtitel, std::string kuenstlername,int ersch
     anzahl_songs++; //Anzahl der Songs erhöht sich um eins 
     return song;
 }
-void song_zu_album_hinzufuegen(Album album, Song song){
+void Musikbibliothek::song_zu_album_hinzufuegen(Album album, Song song){
     if (album.songanzahl%10==0){
         album.songliste=(Song*)realloc(album.songliste,(album.songanzahl+10)*sizeof(Album));
     }
@@ -43,7 +39,7 @@ void song_zu_album_hinzufuegen(Album album, Song song){
     album.songanzahl++;
     album.albumlaenge+=song.songlaenge;
 }
-void song_von_album_entfernen(Album album, Song song){
+void Musikbibliothek::song_von_album_entfernen(Album album, Song song){
     bool song_entfernt=true;
     for (int i=0; i<album.songanzahl; i++){
         if (&album.songliste[i]==&song){
@@ -57,7 +53,7 @@ void song_von_album_entfernen(Album album, Song song){
     }
 }
 //Funktion löscht ein Album
-void album_loeschen(Album album){
+void Musikbibliothek::album_loeschen(Album album){
     //Zuerst wird das Album in der Liste gesucht
     for (int i=0; i<anzahl_alben; i++){
         //Album aus der Liste wird verglichen, ob es gefunden wurde
@@ -78,7 +74,7 @@ void album_loeschen(Album album){
     }
 }
 //Funktion löscht ein Album
-void song_loeschen(Song song){
+void Musikbibliothek::song_loeschen(Song song){
     //Zuerst wird der Song in der Liste gesucht
     for (int i=0; i<anzahl_songs; i++){
         //Song aus der Liste wird verglichen, ob er gefunden wurde
@@ -96,7 +92,7 @@ void song_loeschen(Song song){
     }
 }
 //Funktion sucht nach Songs oder Alben
-int songs_suchen(Song* suchergebnisse,std::string suchbegriff){
+int Musikbibliothek::songs_suchen(Song* suchergebnisse,std::string suchbegriff){
     //Zählt die Suchergebnisse
     int anzahl_ergebnisse=0;
     //Sucht in allen Songs
@@ -116,7 +112,7 @@ int songs_suchen(Song* suchergebnisse,std::string suchbegriff){
     //Gibt die Anzahl der Suchergebnisse für die Suchergebnisse (Call by Reference) zurück
     return anzahl_ergebnisse;
 }
-int alben_suchen(Album* suchergebnisse,std::string suchbegriff){
+int Musikbibliothek::alben_suchen(Album* suchergebnisse,std::string suchbegriff){
     //Zählt die Suchergebnisse
     int anzahl_ergebnisse=0;
     //Sucht in allen Alben
@@ -135,7 +131,7 @@ int alben_suchen(Album* suchergebnisse,std::string suchbegriff){
     //Gibt die Anzahl der Suchergebnisse für die Suchergebnisse (Call by Reference) zurück
     return anzahl_ergebnisse;
 }
-bool bibliothek_speichern(std::string dateipfad){
+bool Musikbibliothek::bibliothek_speichern(std::string dateipfad){
     std::ofstream bibliothek(dateipfad);
     if (bibliothek.is_open()){
         for(int i=0; i<anzahl_songs; i++){
@@ -157,7 +153,15 @@ bool bibliothek_speichern(std::string dateipfad){
     }
     return false;
 }
-bool bibliothek_laden(std::string dateipfad){
+void Musikbibliothek::bibliothek_leeren(){
+    free(alben);
+    alben=(Album*) malloc(10*sizeof(Album));
+    anzahl_alben=0;
+    free(songs);
+    songs=(Song*) malloc(100*sizeof(Song));
+    anzahl_songs=0;
+}
+bool Musikbibliothek::bibliothek_laden(std::string dateipfad){
     bibliothek_leeren();
     std::ifstream bibliothek(dateipfad);
     if (bibliothek.is_open()) {
@@ -202,12 +206,4 @@ bool bibliothek_laden(std::string dateipfad){
         return true;
     }
     return false;
-}
-void bibliothek_leeren(){
-    free(alben);
-    alben=(Album*) malloc(10*sizeof(Album));
-    anzahl_alben=0;
-    free(songs);
-    songs=(Song*) malloc(100*sizeof(Song));
-    anzahl_songs=0;
 }
