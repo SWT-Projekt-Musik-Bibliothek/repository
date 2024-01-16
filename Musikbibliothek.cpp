@@ -98,12 +98,11 @@ int Musikbibliothek::songs_suchen(Song* suchergebnisse,std::string suchbegriff){
     //Sucht in allen Songs
     for (int i=0; i<anzahl_songs; i++){
         //Vergleicht den Suchbegriff mit dem Songtitel und allen Meta-Daten
-        if (suchbegriff==songs[i].songtitel||
-        suchbegriff==songs[i].album.albumname||
-        suchbegriff==songs[i].kuenstlername||
-        suchbegriff==std::to_string(songs[i].erscheinungsjahr)||
-        suchbegriff==std::to_string(songs[i].songlaenge)||
-        suchbegriff==songs[i].genre){
+        if (songs[i].songtitel.find(suchbegriff)!=std::string::npos||
+        songs[i].album.albumname.find(suchbegriff)!=std::string::npos||
+        songs[i].kuenstlername.find(suchbegriff)!=std::string::npos||
+        std::to_string(songs[i].erscheinungsjahr).find(suchbegriff)!=std::string::npos||
+        songs[i].genre.find(suchbegriff)!=std::string::npos){
             //Wenn der Suchbegriff gefunden wurde, füge den Song den Suchergebnissen hinzu
             suchergebnisse[anzahl_ergebnisse]=songs[i];
             anzahl_ergebnisse++;
@@ -118,12 +117,10 @@ int Musikbibliothek::alben_suchen(Album* suchergebnisse,std::string suchbegriff)
     //Sucht in allen Alben
     for (int i=0; i<anzahl_alben; i++){
         //Vergleicht den Suchbegriff mit dem Albumnamen und allen Meta-Daten
-        if (suchbegriff==alben[i].albumname||
-        suchbegriff==alben[i].kuenstlername||
-        suchbegriff==std::to_string(alben[i].erscheinungsjahr)||
-        suchbegriff==std::to_string(alben[i].songanzahl)||
-        suchbegriff==std::to_string(alben[i].albumlaenge)){
-            //Wenn der Suchbegriff gefunden wurde, füge das Album den Suchergebnissen hinzu
+        if (alben[i].albumname.find(suchbegriff)!=std::string::npos||
+        alben[i].kuenstlername.find(suchbegriff)!=std::string::npos||
+        std::to_string(alben[i].erscheinungsjahr).find(suchbegriff)!=std::string::npos){
+        //Wenn der Suchbegriff gefunden wurde, füge das Album den Suchergebnissen hinzu
             suchergebnisse[anzahl_ergebnisse]=alben[i];
             anzahl_ergebnisse++;
         }
