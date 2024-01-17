@@ -112,8 +112,8 @@ TEST_CASE("Songs zu Album hinzufügen"){
         for (int i=0; i<3; i++){
             test_songs[i]=musikbibliothek.songs[i];
         }
-        musikbibliothek.album_hinzufuegen("Das weisse Album (nicht vollständig)", "Haftbefehl", test_songs, 2020, 3, 609); // Album ist in alben[0]
-        musikbibliothek.song_hinzufuegen("Für immer reich", "Haftbefehl", 2020, 192, "Rap"); //Neuer Song ist in songs[3], weil von 0 gezählt wird
+        musikbibliothek.album_hinzufuegen("Das weisse Album (nicht vollständig)", "Haftbefehl", test_songs, 2020, 3, 609); 
+        musikbibliothek.song_hinzufuegen("Für immer reich", "Haftbefehl", 2020, 192, "Rap");
         musikbibliothek.song_zu_album_hinzufuegen(musikbibliothek.alben[0], musikbibliothek.songs[3]);
         REQUIRE(musikbibliothek.alben[0].songanzahl==4);
         REQUIRE(musikbibliothek.alben[0].albumlaenge==609+192);
