@@ -54,7 +54,7 @@ void Cli::bibliothek_einlesen(){
     bool bibliothek_geladen=false;
     while(!bibliothek_geladen){
         std::string speicherort=texteingabe("Bitte geben Sie den Dateipfad der existierenden Bibliothek ein.\n");
-        if(speicherort.substr(speicherort.length()-4,speicherort.length()-1)==".CSV"){
+        if(speicherort.substr(speicherort.length()-4,speicherort.length()-1)==".csv"){
             bibliothek_geladen=musikbibliothek.bibliothek_laden(speicherort);
             if (!bibliothek_geladen){
                 std::cout<<"Dies ist kein Dateipfad einer Musikbibliothek!\n";
@@ -69,7 +69,7 @@ void Cli::bibliothek_abspeichern(){
     bool bibliothek_geladen=false;
     while(!bibliothek_geladen){
         std::string speicherort=texteingabe("Bitte geben Sie den Dateipfad ein, an dem die Bibliothek gespeichert werden soll.\n");
-        if(speicherort.substr(speicherort.length()-4,speicherort.length()-1)==".CSV"){
+        if(speicherort.substr(speicherort.length()-4,speicherort.length()-1)==".csv"){
             bibliothek_geladen=musikbibliothek.bibliothek_laden(speicherort);
             if (!bibliothek_geladen){
                 std::cout<<"Bei diesem Dateipfad kann die Bibiothek nicht gespeichert werden!\n";
